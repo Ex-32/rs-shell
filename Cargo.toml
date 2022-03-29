@@ -3,7 +3,7 @@ name = "rs-shell"
 version = "0.0.0"
 edition = "2021"
 description = "[PLACEHOLDER] a basic shell writen in rust"
-license = "none"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
