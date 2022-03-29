@@ -1,0 +1,12 @@
+# rust build directory
+/target
+
+# OS cache
+.DS_Store
+.Trash-*
+desktop.ini
+
+# editor cache
+.vs
+.vscode
+*.code-workspace
