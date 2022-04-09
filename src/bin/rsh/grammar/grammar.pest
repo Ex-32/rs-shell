@@ -1,0 +1,24 @@
+
+WHITESPACE = _{ " " | "\t" }
+COMMENT = _{ "#" ~ ( !"\n" ~ ANY )* }
+
+Line = _{ SOI ~ Expression ~ EOI }
+Expression = { VarDef* ~ Text+ }
+
+Text = { Expansion | raw_text | single_string | double_string }
+    raw_text = @{ ( !( " " | "\t" | "\n" | "\r" ) ~ ANY )+ }
+    single_string = ${ "'" ~ single_string_internal ~ "'"  }
+        single_string_internal = @{ ( !"'" ~ ANY )* }
+    double_string = ${ "\"" ~ double_string_internal ~ "\"" }
+        double_string_internal = @{ ( !"\"" ~ ( Expansion | ANY ) )* }
+
+VarDef = ${ VarID ~ "=" ~ Text }
+VarID = @{ ( ASCII_ALPHANUMERIC | "_" )+ }
+
+Expansion = { text_var | cmd_var | plain_var | cmd_quote }
+
+    text_var = !{ "${" ~ VarID ~ "}" }
+    plain_var = ${ "$" ~ VarID }
+
+    cmd_var = !{ "$(" ~ Expression ~ ")" }
+    cmd_quote = !{ "`" ~ Expression ~ "`" }

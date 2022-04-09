@@ -1,5 +1,4 @@
 
-
 macro_rules! VERSION {
     ( $major:literal, $minor:literal, $patch:literal ) => {
         #[allow(dead_code)]

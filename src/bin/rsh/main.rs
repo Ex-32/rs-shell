@@ -1,6 +1,7 @@
 mod console_io;
 mod config;
-
+mod parser;
+mod ast;
 mod version;
 
 fn main() {
