@@ -1,24 +1,29 @@
 
-WHITESPACE = _{ " " | "\t" }
+WHITESPACE = _{ " " | "\t" | "\n" | "\r" }
 COMMENT = _{ "#" ~ ( !"\n" ~ ANY )* }
 
-Line = _{ SOI ~ Expression ~ EOI }
-Expression = { VarDef* ~ Text+ }
+Line = { SOI ~ Expression  ~ EOI }
 
-Text = { Expansion | raw_text | single_string | double_string }
-    raw_text = @{ ( !( " " | "\t" | "\n" | "\r" ) ~ ANY )+ }
-    single_string = ${ "'" ~ single_string_internal ~ "'"  }
-        single_string_internal = @{ ( !"'" ~ ANY )* }
-    double_string = ${ "\"" ~ double_string_internal ~ "\"" }
-        double_string_internal = @{ ( !"\"" ~ ( Expansion | ANY ) )* }
+Expression = {
+    ( VarDef* ~ Text+ ~ (Operator ~ Expression?)? ) |
+    ( VarDef* ~ Text+ )
+}
+
+Operator = @{ ";" | "&&" | "&" | "||" | "|" | ">>" | ">&" | ">" | "<<<" | "<<" | "<" }
 
 VarDef = ${ VarID ~ "=" ~ Text }
 VarID = @{ ( ASCII_ALPHANUMERIC | "_" )+ }
 
-Expansion = { text_var | cmd_var | plain_var | cmd_quote }
+Text = { Expansion | RawText | SingleString | DoubleString }
 
-    text_var = !{ "${" ~ VarID ~ "}" }
-    plain_var = ${ "$" ~ VarID }
+    RawText = @{ ( !( WHITESPACE | Operator | "=" ) ~ ANY )+ }
+    SingleString = ${ "'" ~  (!"'" ~ ANY  )*  ~ "'"  }
+    DoubleString = ${ "\"" ~ ( !"\"" ~ ( Expansion | ANY ) )* ~ "\"" }
 
-    cmd_var = !{ "$(" ~ Expression ~ ")" }
-    cmd_quote = !{ "`" ~ Expression ~ "`" }
+    Expansion = { TextVar | CmdVar | PlainVar | CmdQuote }
+
+        TextVar = !{ "${" ~ VarID ~ "}" }
+        PlainVar = ${ "$" ~ VarID }
+
+        CmdVar = !{ "$(" ~ Expression ~ ")" }
+        CmdQuote = !{ "`" ~ Expression ~ "`" }

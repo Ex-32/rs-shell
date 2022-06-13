@@ -1,14 +1,15 @@
 
-macro_rules! VERSION {
-    ( $major:literal, $minor:literal, $patch:literal ) => {
+macro_rules! def_version {
+    ( $major:literal, $minor:literal, $patch:literal) => {
         #[allow(dead_code)]
-        pub const MAJOR: u8 = $major;
+        pub const VERSION_MAJOR: u8 = $major;
         #[allow(dead_code)]
-        pub const MINOR: u8 = $minor;
+        pub const VERSION_MINOR: u8 = $minor;
         #[allow(dead_code)]
-        pub const PATCH: u8 = $patch;
+        pub const VERSION_PATCH: u8 = $patch;
         #[allow(dead_code)]
-        pub const STR: &'static str = concat!($major,".",$minor,".",$patch);
+        pub const VERSION_STR: &'static str = concat!($major,".",$minor,".",$patch);
     };
 }
-VERSION!(0,0,0);
+def_version!(0,0,0);
+
